@@ -13,8 +13,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
 
-app.use("/user", userRouter);
-app.use("/note", noteRouter);
+app.use("/api/user", userRouter);
+app.use("/api/note", noteRouter);
 
 app.get("/", (req, res) => {
   return res.send("Hello index js ");
@@ -36,7 +36,7 @@ app.get("/user/signin", async (req, res) => {
 });
 
 app.get("/api/users", async (req, res) => {
-  const response = await pool.query("select * from users");
+  const response = await pool.query("SELECT * FROM users");
   return res
     .status(200)
     .json({ message: "Welcome to user page", data: response.rows });

@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Form, Input, Checkbox } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/baseUrl";
 
 const Login = () => {
+  
   const navigate = useNavigate();
-  // console.log(navigate);
-  // useEffect(() => {
-  //   navigate("/clients");
-  // }, []);
 
   const onFinish = async (value) => {
     try {
-      const response = await fetch(`http://localhost:5000/user/signin`, {
+      const response = await fetch(`${BASE_URL}/api/user/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -20,7 +18,7 @@ const Login = () => {
         body: JSON.stringify(value),
       });
       if (!response.ok) {
-        throw new Error("error sign in")
+        throw new Error("error sign in");
       }
 
       const storeData = await response.json();
@@ -30,16 +28,6 @@ const Login = () => {
       console.log("after navigate");
     } catch (error) {
       console.log(error.message);
-    }
-  };
-
-  const getDataFromStorage = JSON.parse(localStorage.getItem("userLogin"));
-
-  const homePageNavigation = () => {
-    if (getDataFromStorage) {
-      navigate("/");
-    } else {
-      console.log("some error occured!");
     }
   };
 

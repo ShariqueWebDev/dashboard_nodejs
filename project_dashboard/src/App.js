@@ -28,6 +28,7 @@ import { useStateContext } from "./contexts/ContextProvider";
 import Profile from "./pages/Profile";
 import Sign_Up from "./components/Sign_Up";
 import Login from "./components/Login";
+import StatusMessage from "./components/StatusMessage";
 
 const App = () => {
   const {
@@ -96,6 +97,7 @@ const App = () => {
               <Routes>
                 {/* dashboard  */}
                 <Route path="/" element={<Profile />} />
+                <Route path="/statusmsg" element={<StatusMessage />} />
                 <Route
                   path="/profile"
                   element={<Profile/>}
@@ -104,7 +106,6 @@ const App = () => {
                 {/* pages  */}
                 {/* <Route path="/orders" element={<Orders />} /> */}
 
-                {/* <Route path="/employees" element={<Employees />} /> */}
                 <Route path="/clients" element={<Employees />} />
 
                 {/* <Route path="/customers" element={<Customers />} /> */}

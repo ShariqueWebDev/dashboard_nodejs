@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { MdDeleteOutline, MdModeEditOutline } from "react-icons/md";
-
-import Login from "../components/Login";
-import { Navigate } from "react-router-dom";
 import { Form, Input, Modal, Table } from "antd";
-import PopUp from "../components/popup/PopUp";
+import { BASE_URL } from "../utils/baseUrl";
+import Swal from "sweetalert2";
+import { Navigate } from "react-router-dom";
 
 const Customers = () => {
   const [users, setUsers] = useState([]);
@@ -34,7 +33,17 @@ const Customers = () => {
     },
     {
       key: "5",
-      title: "Actions",
+      title: "STATUS",
+      dataIndex: "status",
+    },
+    {
+      key: "6",
+      title: "ACCESS USER",
+      dataIndex: "access_user",
+    },
+    {
+      key: "7",
+      title: "ACTIONS",
       render: (_, record) => {
         return (
           <>
@@ -72,23 +81,21 @@ const Customers = () => {
     });
   }, []);
 
-  console.log(users);
   const getDatafromstore = JSON.parse(localStorage.getItem("userLogin"));
 
   const deleteUserData = async (id) => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/user/deleteuser",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({ id }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/user/deleteuser`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
       if (response.ok) {
-        console.log("user has been deleted!");
+        Swal.fire({
+          title:"User has been Deleted!"
+        })
         deleteUser(id);
       }
     } catch (error) {
@@ -98,7 +105,7 @@ const Customers = () => {
 
   const postEditUserData = async (id, first_name, last_name, email) => {
     try {
-      const response = await fetch("http://localhost:5000/api/user/edituser", {
+      const response = await fetch(`${BASE_URL}/api/user/edituser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,9 +114,11 @@ const Customers = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setUsers(data?.data)
+        setUsers(data?.data);
         console.log(data, "dataaaa");
-        console.log("user data has been updated");
+        Swal.fire({
+          title:'User details has been Updated!'
+        })
       }
     } catch (error) {
       console.log("user data could not be update");
@@ -117,7 +126,7 @@ const Customers = () => {
   };
 
   const fetchUserData = async () => {
-    const response = await fetch("http://localhost:5000/api/users");
+    const response = await fetch(`${BASE_URL}/api/users`);
     const getUser = await response.json();
     return getUser;
   };
@@ -139,14 +148,15 @@ const Customers = () => {
 
   return (
     <div className="">
-      {getDatafromstore ? (
+      {getDatafromstore?.userData?.access_user === true ? (
         <div className="m-2 md:m-10 border mt-24 p-2 md:p-10 bg-white rounded-3xl">
           <Table columns={columns} dataSource={users} />
         </div>
       ) : (
-        <Navigate to={"/login"} />
+        <div className="flex justify-center items-center h-[100px] mt-[150px] font-semibold text-gray-500">
+          Sorry ! You cannot access this page
+        </div>
       )}
-      {/* <PopUp popUpData={popUpData} setPopUpData={setPopUpData} setShow={setShow} show={show} /> */}
       <Modal
         title="Edit User"
         visible={show}

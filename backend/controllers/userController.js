@@ -44,7 +44,7 @@ const signup = async (req, res) => {
     const user = insertUserQueryResponse.rows[0];
 
     const token = jwt.sign({ email: user.email, id: user.id }, SECRET_KEY);
-    sendEmailController(user?.email, user?.name)
+    sendEmailController(user?.email, user?.name);
 
     return res.status(201).json({ user: user, token: token });
   } catch (error) {
@@ -73,22 +73,32 @@ const signin = async (req, res) => {
       });
     }
 
+    const checkIsActive = checkExistingUserQuery.rows[0];
+    console.log(checkIsActive.status);
+
     const compareHashPassword = await bcrypt.compare(
       password,
       checkExistingUserQuery.rows[0].password
     );
 
-    // console.log(compareHashPassword);
     // Compare hash password
     if (!compareHashPassword) {
       return res.status(500).json({ message: "Password is incorrect" });
     }
 
-    // const compareUserToken = jwt.sign({ email: email }, SECRET_KEY);
-    return res.status(200).json({
-      message: "User Signed In",
-      userData: checkExistingUserQuery.rows[0],
-    });
+    if (!checkIsActive.status) {
+      return res.status(401).json({
+        message: "Sorry! User status is inactive by admin",
+      });
+    }
+
+    if (checkIsActive.status) {
+      return res.status(200).json({
+        activeMessage: "User Status is active",
+        signInMessage: "User Signed In",
+        userData: checkExistingUserQuery.rows[0],
+      });
+    }
   } catch (error) {
     return res.status(500).json({ message: "Server error...." });
   }
