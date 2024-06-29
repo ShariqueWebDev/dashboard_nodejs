@@ -5,7 +5,8 @@ const port = 5000;
 const pool = require("./db");
 const userRouter = require("./routes/userRoutes");
 const noteRouter = require("./routes/noteRoutes");
-const sendEmail = require("./routes/sendEmail");
+const deleteUser = require("./controllers/deleteUser");
+const editUser = require("./controllers/editUser");
 
 // Middleware
 app.use(cors());
@@ -14,7 +15,6 @@ app.use(express.urlencoded({ limit: "5mb", extended: true }));
 
 app.use("/user", userRouter);
 app.use("/note", noteRouter);
-app.use("/email", sendEmail);
 
 app.get("/", (req, res) => {
   return res.send("Hello index js ");
@@ -35,17 +35,6 @@ app.get("/user/signin", async (req, res) => {
   }
 });
 
-// Mounting Routes
-// app.use('/api', routes)
-
-// app.post("/api/register", (req, res) => {
-//   console.log("Welcome to register page");
-//   res.json({ message: "Welcome to register page" });
-// });
-// app.post("/api/login", (req, res) => {
-//   console.log("Welcome to login page");
-//   res.json({ message: "Welcome to login page" });
-// });
 app.get("/api/users", async (req, res) => {
   const response = await pool.query("select * from users");
   return res
@@ -54,6 +43,10 @@ app.get("/api/users", async (req, res) => {
   // res.status(200).send("Success");
 });
 
+app.post("/api/user/deleteuser", deleteUser);
+app.post('/api/user/edituser', editUser)
+
 app.listen(port, () => {
   console.log("Server Running on PORT " + port);
 });
+

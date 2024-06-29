@@ -40,6 +40,7 @@ const App = () => {
     setThemeSettings,
   } = useStateContext();
 
+
   useEffect(() => {
     const currentThemeColor = localStorage.getItem("colorMode");
     const currentThemeMode = localStorage.getItem("themeMode");
@@ -49,6 +50,8 @@ const App = () => {
     }
   }, []);
 
+  useEffect(()=>{
+  }, [location])
   const getDataFromStorage = JSON.parse(localStorage.getItem("userLogin"));
 
   return (
@@ -67,6 +70,7 @@ const App = () => {
               </button>
             </TooltipComponent>
           </div>
+          
           {activeMenu ? (
             <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white ">
               <Sidebar />
@@ -94,13 +98,7 @@ const App = () => {
                 <Route path="/" element={<Profile />} />
                 <Route
                   path="/profile"
-                  element={
-                    !getDataFromStorage ? (
-                      <Navigate replace to={"/login"} />
-                    ) : (
-                      <Profile />
-                    )
-                  }
+                  element={<Profile/>}
                 />
 
                 {/* pages  */}

@@ -127,7 +127,7 @@ const Login = () => {
           </Form>
           <p className="text-center m-3 text-[14px]">
             Not registered yet?{" "}
-            <Link to={"/signup"}>
+            <Link to={"/sign_up"}>
               <span className="text-blue-600 cursor-pointer">
                 Create an account&#8599;
               </span>

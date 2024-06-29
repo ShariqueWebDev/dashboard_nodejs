@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Form, Button, Input, Space } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Sign_Up = () => {
+  const navigate = useNavigate();
   const onFinish = async (value) => {
     try {
       const response = await fetch("http://localhost:5000/user/signup", {
@@ -15,19 +16,16 @@ const Sign_Up = () => {
       });
 
       if (response.ok) {
-        const signupData = response.json();
+        navigate("/");
         console.log("user has been created");
+
         Swal.fire({
           title: "success alert!",
           text: "registration complete",
           timer: 2000,
         });
-        // localStorage.setItem("credentials", JSON.stringify(signupData));
       }
     } catch (error) {}
-
-    // setMoreData.push(value)
-    // localStorage.setItem("credentials", JSON.stringify(setMoreData))
   };
 
   return (
