@@ -35,11 +35,25 @@ const Customers = () => {
       key: "5",
       title: "STATUS",
       dataIndex: "status",
+      render: (status) => {
+        if (status) {
+          return <>Active</>;
+        } else {
+          return <>Inactive</>;
+        }
+      },
     },
     {
       key: "6",
       title: "ACCESS USER",
       dataIndex: "access_user",
+      render: (access_user) => {
+        if (access_user) {
+          return <>Active</>;
+        } else {
+          return <>Inactive</>;
+        }
+      },
     },
     {
       key: "7",
@@ -94,8 +108,8 @@ const Customers = () => {
       });
       if (response.ok) {
         Swal.fire({
-          title:"User has been Deleted!"
-        })
+          title: "User has been Deleted!",
+        });
         deleteUser(id);
       }
     } catch (error) {
@@ -117,8 +131,8 @@ const Customers = () => {
         setUsers(data?.data);
         console.log(data, "dataaaa");
         Swal.fire({
-          title:'User details has been Updated!'
-        })
+          title: "User details has been Updated!",
+        });
       }
     } catch (error) {
       console.log("user data could not be update");
