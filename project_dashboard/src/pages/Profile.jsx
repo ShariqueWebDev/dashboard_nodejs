@@ -33,13 +33,16 @@ const DropDown = ({ currentMode }) => (
 );
 
 const Profile = () => {
-  const { currentColor, currentMode } = useStateContext();
-  const getDatafromstore = JSON.parse(localStorage.getItem("userLogin"));
-
+  const getDatafromstore = (JSON.parse(localStorage.getItem("userLogin")).userData);
+  // const getArray = Object.entries(getDatafromstore)
+  // const filterValues = getArray.filter(([i, _])=>{
+  //   return i !== "password"
+  // })
+  // console.log(getArray);
   return (
-    <>
-      {getDatafromstore? (
-        <div className="mt-5 ml-5">
+    <div className="">
+      {getDatafromstore ? (
+        <div className="mt-5 ml-5 overflow-x-scroll ">
           <div class="bg-white max-w-2xl shadow overflow-hidden sm:rounded-lg">
             <div class="px-4 py-5 sm:px-6">
               <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -54,13 +57,13 @@ const Profile = () => {
                 <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">First name</dt>
                   <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    Mickael Poulaz
+                    {getDatafromstore.first_name}
                   </dd>
                 </div>
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">Last name</dt>
                   <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    React JS
+                    {getDatafromstore.last_name}
                   </dd>
                 </div>
                 <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -68,13 +71,13 @@ const Profile = () => {
                     Email address
                   </dt>
                   <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    m.poul@example.com
+                    {getDatafromstore.email     }
                   </dd>
                 </div>
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt class="text-sm font-medium text-gray-500">password</dt>
+                  <dt class="text-sm font-medium text-gray-500">status</dt>
                   <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    $10,000
+                    {(getDatafromstore.status)?"Active":"Inacitve"}
                   </dd>
                 </div>
                 <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -93,7 +96,7 @@ const Profile = () => {
       ) : (
         <Navigate to={"/login"} />
       )}
-    </>
+    </div>
   );
 };
 

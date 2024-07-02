@@ -29,6 +29,7 @@ import Profile from "./pages/Profile";
 import Sign_Up from "./components/Sign_Up";
 import Login from "./components/Login";
 import StatusMessage from "./components/StatusMessage";
+import UploadImage from "./pages/UploadImage";
 
 const App = () => {
   const {
@@ -106,10 +107,10 @@ const App = () => {
                 {/* pages  */}
                 {/* <Route path="/orders" element={<Orders />} /> */}
 
-                <Route path="/clients" element={<Employees />} />
 
-                {/* <Route path="/customers" element={<Customers />} /> */}
+                <Route path="/image" element={<UploadImage />} />
                 <Route path="/users" element={<Customers />} />
+                <Route path="/clients" element={<Employees />} />
                 <Route
                   path="/sign_up"
                   element={

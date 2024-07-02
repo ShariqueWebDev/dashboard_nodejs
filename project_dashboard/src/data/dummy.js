@@ -2,7 +2,7 @@ import React from 'react';
 import { AiOutlineCalendar, AiOutlineShoppingCart, AiOutlineAreaChart, AiOutlineBarChart, AiOutlineStock, AiOutlineProfile, AiFillProfile } from 'react-icons/ai';
 import { FiShoppingBag, FiEdit, FiPieChart, FiBarChart, FiCreditCard, FiStar, FiShoppingCart, FiUser } from 'react-icons/fi';
 import { BsKanban, BsBarChart, BsBoxSeam, BsCurrencyDollar, BsShield, BsChatLeft } from 'react-icons/bs';
-import { BiColorFill } from 'react-icons/bi';
+import { BiColorFill, BiImage } from 'react-icons/bi';
 import { IoMdContacts, IoMdLogIn } from 'react-icons/io';
 import { RiContactsLine, RiStockLine } from 'react-icons/ri';
 import { MdOutlineSupervisorAccount } from 'react-icons/md';
@@ -469,7 +469,7 @@ export const employeesGrid = [
     textAlign: 'Center' },
 ];
 
-const getDataFromStorage = JSON?.parse(localStorage?.getItem("userLogin"))
+// const getDataFromStorage = JSON?.parse(localStorage?.getItem("userLogin"))
 
 export const links = [
   {
@@ -488,6 +488,10 @@ export const links = [
       {
         name: 'users',
         icon: <IoMdContacts />,
+      },
+      {
+        name: 'image',
+        icon: <BiImage />,
       },
       {
         name: 'clients',
