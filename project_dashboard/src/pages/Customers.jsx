@@ -1,14 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { MdDeleteOutline, MdModeEditOutline } from "react-icons/md";
-import { Form, Input, Modal, Table } from "antd";
+import { Button, Form, Input, Modal, Switch, Table } from "antd";
 import { BASE_URL } from "../utils/baseUrl";
 import Swal from "sweetalert2";
-import { Navigate } from "react-router-dom";
 
 const Customers = () => {
   const [users, setUsers] = useState([]);
   const [show, setShow] = useState(false);
-  const [editUser, setEditUser] = useState(null);
+  const [form] = Form.useForm();
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/users`);
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data.data);
+      } else {
+        console.error("Failed To Fetch Data");
+      }
+    } catch (error) {
+      console.error("Internal Server Error");
+    }
+  };
 
   const columns = [
     {
@@ -67,7 +80,8 @@ const Customers = () => {
                 style={{ cursor: "pointer" }}
                 onClick={() => {
                   setShow(true);
-                  handleEditUser(record);
+                  // handleEditUser(record);
+                  form.setFieldsValue(record);
                 }}
               />
               <MdDeleteOutline
@@ -84,15 +98,8 @@ const Customers = () => {
     },
   ];
 
-  const handleEditUser = (record) => {
-    setShow(true);
-    setEditUser(record);
-  };
-
   useEffect(() => {
-    fetchUserData().then((i) => {
-      setUsers(i?.data);
-    });
+    fetchUserData();
   }, []);
 
   const getDatafromstore = JSON.parse(localStorage.getItem("userLogin"));
@@ -117,19 +124,32 @@ const Customers = () => {
     }
   };
 
-  const postEditUserData = async (id, first_name, last_name, email) => {
+  const handleCancel = () => {
+    setShow(false);
+    form.resetFields();
+  };
+  const postEditUserData = async (values) => {
     try {
+      console.log(values);
+      const { id, first_name, last_name, email, status, access_user } = values;
       const response = await fetch(`${BASE_URL}/api/user/edituser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id, first_name, last_name, email }),
+        body: JSON.stringify({
+          id,
+          first_name,
+          last_name,
+          email,
+          status,
+          access_user,
+        }),
       });
       if (response.ok) {
         const data = await response.json();
-        setUsers(data?.data);
-        console.log(data, "dataaaa");
+        fetchUserData();
+        handleCancel();
         Swal.fire({
           title: "User details has been Updated!",
         });
@@ -137,12 +157,6 @@ const Customers = () => {
     } catch (error) {
       console.log("user data could not be update");
     }
-  };
-
-  const fetchUserData = async () => {
-    const response = await fetch(`${BASE_URL}/api/users`);
-    const getUser = await response.json();
-    return getUser;
   };
 
   // Antd Delete function
@@ -175,82 +189,83 @@ const Customers = () => {
         title="Edit User"
         visible={show}
         okText="Update"
-        onCancel={() => {
-          setShow(false);
-          setEditUser(null);
-        }}
-        onOk={() => {
-          // setUsers((pre) => {
-          //   return pre.map((user) => {
-          //     if (user.id === editUser.id) {
-          //       return editUser;
-          //     } else {
-          //       user;
-          //     }
-          //   });
-          // });
-          postEditUserData(
-            editUser.id,
-            editUser.first_name,
-            editUser.last_name,
-            editUser.email
-          );
-          setShow(false);
-          setEditUser(null);
-        }}
-        okType="default"
+        onCancel={() => handleCancel()}
+        footer={null}
       >
-        <Form.Item
-          rules={[
-            {
-              required: true,
-              message: "first name field required",
-            },
-          ]}
-        >
-          <Input
-            value={editUser?.first_name}
-            onChange={(e) => {
-              setEditUser((pre) => {
-                return { ...pre, first_name: e.target.value };
-              });
-            }}
-          />
-        </Form.Item>
-        <Form.Item
-          rules={[
-            {
-              required: true,
-              message: "last name field required",
-            },
-          ]}
-        >
-          <Input
-            value={editUser?.last_name}
-            onChange={(e) => {
-              setEditUser((pre) => {
-                return { ...pre, last_name: e.target.value };
-              });
-            }}
-          />
-        </Form.Item>
-        <Form.Item
-          rules={[
-            {
-              required: true,
-              message: "Email field required",
-            },
-          ]}
-        >
-          <Input
-            value={editUser?.email}
-            onChange={(e) => {
-              setEditUser((pre) => {
-                return { ...pre, email: e.target.value };
-              });
-            }}
-          />
-        </Form.Item>
+        <Form form={form} onFinish={postEditUserData}>
+          <Form.Item name="id" className="hidden">
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="first_name"
+            rules={[
+              {
+                required: true,
+                message: "first name field required",
+              },
+            ]}
+          >
+            <Input
+              onChange={(e) => {
+                setEditUser((pre) => {
+                  return { ...pre, first_name: e.target.value };
+                });
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="last_name"
+            rules={[
+              {
+                required: true,
+                message: "last name field required",
+              },
+            ]}
+          >
+            <Input
+              onChange={(e) => {
+                setEditUser((pre) => {
+                  return { ...pre, last_name: e.target.value };
+                });
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Email field required",
+              },
+            ]}
+          >
+            <Input
+              onChange={(e) => {
+                setEditUser((pre) => {
+                  return { ...pre, email: e.target.value };
+                });
+              }}
+            />
+          </Form.Item>
+          <Form.Item name="status" label="Status">
+            <Switch className="bg-black" />
+          </Form.Item>
+          <Form.Item
+            label="Access User"
+            name="access_user"
+            valuePropName="checked"
+          >
+            <Switch className="bg-black" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              className="bg-stone-900 text-white uppercase"
+              htmlType="submit"
+            >
+              Update
+            </Button>
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
   );
