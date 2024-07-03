@@ -1,35 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { BASE_URL } from "../utils/baseUrl";
 import "swiper/css";
 
-const SwiperSlider = () => {
+const SwiperSlider = ({imageData}) => {
+  // const [image, setImage] = useState([])
 
-    const getImageformApi = async() =>{
-        const res = await fetch(`http://localhost:5000/api/getImage/image`)
-        const data = await res.json()
-        console.log(data);
-    }
 
-    useEffect(()=>{
-        getImageformApi()
-    }, [])
+
+
   return (
     <div className="mt-[50px]">
-    <div className="text-[30px] ml-2">Images</div>
-      <div className="w-[500px] border">
+     {imageData.length > 0 ? <div className="border rounded-3xl " >
         <Swiper
-          spaceBetween={50}
-          slidesPerView={3}
+          className="cursor-pointer"
+          // spaceBetween={50}
+          loop={true}
+          slidesPerView={1}
           onSlideChange={() => console.log("slide change")}
+          style={{maxWidth:'750px', height:"500px", borderRadius:"24px" }}
           onSwiper={(swiper) => console.log(swiper)}
         >
-          <SwiperSlide>Slide 1</SwiperSlide>
-          <SwiperSlide>Slide 2</SwiperSlide>
-          <SwiperSlide>Slide 3</SwiperSlide>
-          <SwiperSlide>Slide 5</SwiperSlide>
-          <SwiperSlide>Slide 6</SwiperSlide>
+          {imageData?.map((i) => {
+          
+            const { id, image_path } = i;
+            console.log(id, image_path, "IMAGE DATA");
+            return (
+              <div>
+                <SwiperSlide key={id}>
+                  <img src={`${BASE_URL}/${image_path}`} className="" />
+                </SwiperSlide>
+              </div>
+            );
+          })}
         </Swiper>
-      </div>
+      </div>:<div className="text-[20px] h-[150px] flex justify-center items-center border w-[750px] rounded-2xl">{"No Image Preview"}</div>}
     </div>
   );
 };

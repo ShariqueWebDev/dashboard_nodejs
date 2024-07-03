@@ -1,20 +1,23 @@
 const express = require("express");
 const cors = require("cors");
+const multer = require("multer");
+
 const app = express();
 const port = 5000;
+const path = require("path");
 const pool = require("./db");
+
 const userRouter = require("./routes/userRoutes");
 const uploadImage = require("./controllers/uploadImage");
 const deleteUser = require("./controllers/deleteUser");
 const editUser = require("./controllers/editUser");
-const multer = require("multer");
-const getApiImage = require("./controllers/getApiImage");
-const getApiImages = require("./controllers/getApiImage");
+const apiForDeleteImage = require("./controllers/deletImage");
 
 //Common Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // MIDDLEWARE FOR UPLOAD IMAGES
 const upload = multer({
@@ -23,30 +26,36 @@ const upload = multer({
       callback(null, "images");
     },
     filename: (req, file, callback) => {
-      callback(null, file.originalname);
+      callback(null, file.fieldname + Date.now());
     },
   }),
 }).single("image_file");
 
 app.use("/api/user", userRouter);
-app.post("/api/image/upload", upload, uploadImage);
 
+// API FOR IMAGES UPLOAD AND DELETE
+app.post("/api/image/upload", upload, uploadImage);
+app.post("/api/image/delete", apiForDeleteImage);
+
+// API FOR GET ALL IMAGES
 app.get("/api/image/getimage", async (req, res) => {
   try {
     const response = await pool.query(`SELECT * FROM image`);
-    return response.status(200).json({
+    console.log(response);
+    return res.status(200).json({
       success: true,
       data: response.rows,
-      message: "data fetched completed",
+      message: "Image data fetched",
     });
   } catch (error) {
-    return response.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Internal Server Error",
     });
   }
 });
 
+// EDIT DELETE API FOR USER
 app.post("/api/user/deleteuser", deleteUser);
 app.post("/api/user/edituser", editUser);
 
@@ -74,13 +83,11 @@ app.get("/user/signin", async (req, res) => {
 app.get("/api/users", async (req, res) => {
   try {
     const response = await pool.query("SELECT * FROM users");
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Welcome to user page",
-        data: response.rows,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Welcome to user page",
+      data: response.rows,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
