@@ -33,7 +33,7 @@ const DropDown = ({ currentMode }) => (
 );
 
 const Profile = () => {
-  const getDatafromstore = (JSON.parse(localStorage.getItem("userLogin")).userData);
+  const getDatafromstore = (JSON.parse(localStorage.getItem("userLogin"))?.userData);
   // const getArray = Object.entries(getDatafromstore)
   // const filterValues = getArray.filter(([i, _])=>{
   //   return i !== "password"
